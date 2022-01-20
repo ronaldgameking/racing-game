@@ -34,14 +34,21 @@ public class ScoreSystemExample : MonoBehaviour
         {
             SaveGameManagment managment = SaveGameManagment.GetGlobalInstance(true);
             PlayerData pd = new PlayerData();
-            pd.Scores = new ScoreEntry[] { new ScoreEntry("rob", TimeExt.UnixEpoch + new TimeSpan(1, 0, 0)) };
+            pd.Scores = new ScoreEntry[] { new ScoreEntry("rob", TimeExt.UnixEpoch + new TimeSpan(100, 0, 0)), new ScoreEntry("fbi", DateTime.UtcNow) };
             managment.Save(pd);
-            byte[] buff = new byte[managment.MemoryStream.Length];
-            Logger.LogVerbose(managment.MemoryStream.Length);
-            Logger.LogVerbose(managment.MemoryStream.Read(buff, 0, (int)managment.MemoryStream.Length));
-            managment.MemoryStream.Position = 0;
+            if (managment.ExposeMemoryStream)
+            {
+                byte[] buff = new byte[managment.MemoryStream.Length];
+                Logger.LogVerbose(managment.MemoryStream.Length);
+                Logger.LogVerbose(managment.MemoryStream.Read(buff, 0, (int)managment.MemoryStream.Length));
+                managment.MemoryStream.Position = 0;
+            }
+            else
+            {
+                Logger.LogVerbose("Skipping Memory debug");
+            }
             managment.Flush();
-            managment.InvalidateCache();
+            //managment.InvalidateCache();
             PlayerData restoredData = managment.Load();
             Data = restoredData;
             Logger.LogVerbose(Data.Scores[0].Time.ToString());
