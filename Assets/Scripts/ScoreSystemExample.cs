@@ -32,7 +32,7 @@ public class ScoreSystemExample : MonoBehaviour
         }
         else
         {
-            SaveGameManagment managment = new SaveGameManagment(true);
+            SaveGameManagment managment = SaveGameManagment.GetGlobalInstance(true);
             PlayerData pd = new PlayerData();
             pd.Scores = new ScoreEntry[] { new ScoreEntry("rob", TimeExt.UnixEpoch + new TimeSpan(1, 0, 0)) };
             managment.Save(pd);

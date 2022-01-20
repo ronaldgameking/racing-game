@@ -10,6 +10,9 @@ using System.Linq;
 
 public class SaveGameManagment
 {
+    /// <summary>
+    /// The publicly exposed memory stream, returns null if not exposed
+    /// </summary>
     public MemoryStream MemoryStream
     {
         get
@@ -18,11 +21,17 @@ public class SaveGameManagment
             return m_memoryStream;
         }
     }
+
+    /// <summary>
+    /// Is the MemoryStream exposed, exposing the stream could impair security or allow externals to modify memory stream
+    /// </summary>
     public bool ExposeMemoryStream { get; private set; } = false;
     public bool AutoSave { get; private set; } = false;
     public bool HasCache { get; private set; } = false;
 
     private static string path = Path.Combine(UnityEngine.Application.persistentDataPath, "sv.bin");
+    private static SaveGameManagment m_instance;
+
     private MemoryStream m_memoryStream = new MemoryStream();
 
     public SaveGameManagment() { }
@@ -44,6 +53,39 @@ public class SaveGameManagment
         AutoSave = autoSaveDisk;
     }
 
+    /// <summary>
+    /// Gets a global <see cref="SaveGameManagment"/> to work with
+    /// </summary>
+    /// <returns></returns>
+    public static SaveGameManagment GetGlobalInstance()
+    {
+        if (m_instance == null)
+        {
+            m_instance = new SaveGameManagment(false, false);
+        }
+        return m_instance;
+    }
+    /// <summary>
+    /// Gets a global <see cref="SaveGameManagment"/> to work with withj or without auto-saving
+    /// </summary>
+    /// <returns></returns>
+    public static SaveGameManagment GetGlobalInstance(bool saving)
+    {
+        if (m_instance == null)
+        {
+            m_instance = new SaveGameManagment(false, saving);
+        }
+        return m_instance;
+    }
+    public static void ResetIntance()
+    {
+        m_instance = null;
+    }
+
+    /// <summary>
+    /// Save the PlayerData in a temporaly memory stream
+    /// </summary>
+    /// <param name="pd"></param>
     public void Save(PlayerData pd)
     {
         using BinaryWriter binaryWriter = new BinaryWriter(m_memoryStream, Encoding.UTF8, true);
@@ -55,14 +97,18 @@ public class SaveGameManagment
         binaryWriter.Write(pd.Scores.Length);
         for (int i = 0; i < pd.Scores.Length; i++)
         {
-            //binaryWriter.Write(pd.Scores[i].Initials.Length);
             Logger.Log("Looping " + i);
             binaryWriter.Write(pd.Scores[i].Initials);
             binaryWriter.Write('\0');
             binaryWriter.Write((pd.Scores[i].Time - TimeExt.UnixEpoch).TotalSeconds);
             binaryWriter.Write('\0');
         }
+        if (AutoSave)
+            Flush();
     }
+    /// <summary>
+    /// Saves the memory saves Player Data to Disk (must be called to manually if <see cref="AutoSave"/> is false)
+    /// </summary>
     public void Flush()
     {
         using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
@@ -112,6 +158,9 @@ public class SaveGameManagment
         }
         return pd;
     }
+    /// <summary>
+    /// Invalidate cache to force loading from disk
+    /// </summary>
     public void InvalidateCache()
     {
         HasCache = false;
