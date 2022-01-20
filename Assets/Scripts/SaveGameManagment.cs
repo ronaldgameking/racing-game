@@ -4,10 +4,6 @@ using System.Text;
 using System.Reflection;
 using System.Linq;
 
-/// <saummary>
-/// Deprecated, use <see cref="SaveSystem"/> This was mean to be a cleaner alternative to <see cref="SaveSystem"/>
-/// </summary>
-
 public class SaveGameManagment
 {
     /// <summary>
@@ -66,7 +62,7 @@ public class SaveGameManagment
         return m_instance;
     }
     /// <summary>
-    /// Gets a global <see cref="SaveGameManagment"/> to work with withj or without auto-saving
+    /// Gets a global <see cref="SaveGameManagment"/> to workwith. Either with or without auto-saving
     /// </summary>
     /// <returns></returns>
     public static SaveGameManagment GetGlobalInstance(bool saving)
@@ -75,6 +71,33 @@ public class SaveGameManagment
         {
             m_instance = new SaveGameManagment(false, saving);
         }
+        return m_instance;
+    }
+    /// <summary>
+    /// Gets a unsafe global <see cref="SaveGameManagment"/> exposing the memory stream and disabling auto saving. THIS WILL DESTROY THE PREVIOUS INSTANCE
+    /// </summary>
+    /// <returns></returns>
+    public static SaveGameManagment GetUnsafeGlobalInstance()
+    {
+        m_instance = null;
+        m_instance = new SaveGameManagment(true, false);
+        
+        return m_instance;
+    }
+    /// <summary>
+    /// Gets a unsafe global <see cref="SaveGameManagment"/> exposing the memory stream and disabling auto saving. Set keepData to true to transfer the data to the new instance
+    /// <para> THIS WILL DESTROY THE PREVIOUS INSTANCE</para>
+    /// </summary>
+    /// <returns></returns>
+    public static SaveGameManagment GetUnsafeGlobalInstance(bool keepData)
+    {
+        MemoryStream ms = m_instance.m_memoryStream;
+        bool cache = m_instance.HasCache;
+        m_instance = null;
+        m_instance = new SaveGameManagment(true, false);
+        m_instance.m_memoryStream = ms;
+        m_instance.ExposeMemoryStream = true;
+        
         return m_instance;
     }
     public static void ResetIntance()
@@ -95,14 +118,19 @@ public class SaveGameManagment
         //    binaryWriter.Write(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         //    return true; });
         binaryWriter.Write(pd.Scores.Length);
+        Logger.LogVerbose("Written amount of scores");
         for (int i = 0; i < pd.Scores.Length; i++)
         {
             Logger.Log("Looping " + i);
-            binaryWriter.Write(pd.Scores[i].Initials);
-            binaryWriter.Write('\0');
+            binaryWriter.Write(pd.Scores[i].Name);
+            Logger.LogVerbose("Written Initials");
+            //binaryWriter.Write('\0');
             binaryWriter.Write((pd.Scores[i].Time - TimeExt.UnixEpoch).TotalSeconds);
-            binaryWriter.Write('\0');
+            //Flush();
+            //Logger.LogVerbose("Written data of achieving");
+            //binaryWriter.Write('\0');
         }
+        m_memoryStream.Position = 0;
         if (AutoSave)
             Flush();
     }
@@ -113,8 +141,11 @@ public class SaveGameManagment
     {
         using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
         {
+            long backupPos = m_memoryStream.Position;
             m_memoryStream.Position = 0;
+            fs.Position = 0;
             m_memoryStream.CopyTo(fs);
+            m_memoryStream.Position = backupPos;
             HasCache = true;
         }
     }
@@ -133,27 +164,30 @@ public class SaveGameManagment
             {
                 m_memoryStream.Position = 0;
                 fs.CopyTo(m_memoryStream);
-                m_memoryStream.Position = 0;
             }
+            m_memoryStream.Position = 0;
         }
         BinaryReader binaryReader = new BinaryReader(m_memoryStream, Encoding.UTF8, true);
         PlayerData pd = new PlayerData();
         int savedScores = binaryReader.ReadInt32();
-        pd.Scores = new ScoreEntry[10];
+        pd.Scores = new ScoreEntry[savedScores];
         for (int i = 0; i < pd.Scores.Length; i++)
         {
-            Logger.LogVerbose("Creating ScoreEntry [" + i + "...");
+            Logger.LogVerbose("Loading ScoreEntry [" + i + "...");
             ScoreEntry tempScore = new ScoreEntry();
-            string outInitials = "";
-            binaryReader.ReadChars(3).All(readChar =>
-            {
-                outInitials += readChar;
-                return true;
-            }
-            );
-            tempScore.Initials = outInitials;
-            tempScore.Time = DateTime.UtcNow;
-            Logger.LogVerbose("Entry {" + tempScore.Initials + ", " + tempScore.Time.ToString() + "}");
+            //int nameLenght = binaryReader.ReadByte();
+            string outName = binaryReader.ReadString();
+            //binaryReader.ReadChars(nameLenght).All(readChar =>
+            //{
+            //    outName += readChar;
+            //    return true;
+            //}
+            //);
+            tempScore.Name = outName;
+            TimeSpan timeSpan = TimeSpan.FromSeconds(binaryReader.ReadDouble());
+            DateTime aquireDate = TimeExt.UnixEpoch + timeSpan;
+            tempScore.Time = aquireDate;
+            Logger.LogVerbose("Entry { id: " + i + ", Initials: " + tempScore.Name + ", Time:" + tempScore.Time.ToString() + "}");
             pd.Scores[i] = tempScore;
         }
         return pd;
