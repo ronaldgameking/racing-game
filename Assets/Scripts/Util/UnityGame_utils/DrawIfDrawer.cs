@@ -9,6 +9,8 @@ namespace UnityUtils
     [CustomPropertyDrawer(typeof(DrawIfAttribute))]
     public class DrawIfDrawer : PropertyDrawer
     {
+        #if UNITY_EDITOR
+
         // Reference to the attribute on the property.
         private DrawIfAttribute drawIf;
 
@@ -143,5 +145,6 @@ namespace UnityUtils
                 }
             }
         }
+        #endif
     }
 }
