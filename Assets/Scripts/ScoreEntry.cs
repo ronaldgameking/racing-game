@@ -6,19 +6,14 @@ using System.Collections.Generic;
 public struct ScoreEntry
 {
     public string Name;
-    public DateTime Time;
+    public DateTime AchievedOn;
     public DateTimeOffset UnixTime;
     public TimeSpan AchievedTime;
 
-    public ScoreEntry(string initials, DateTime time)
-    {
-        Name = initials;
-        Time = time;
-    }
     public ScoreEntry(string initials, DateTime time, TimeSpan span)
     {
         Name = initials;
-        Time = time;
+        AchievedOn = time;
         AchievedTime = span;
     }
 }

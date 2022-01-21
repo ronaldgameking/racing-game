@@ -34,7 +34,7 @@ public class ScoreSystemExample : MonoBehaviour
         {
             SaveGameManagment managment = SaveGameManagment.GetGlobalInstance(true);
             PlayerData pd = new PlayerData();
-            pd.Scores = new ScoreEntry[] { new ScoreEntry("rob", TimeExt.UnixEpoch + new TimeSpan(100, 0, 0)), new ScoreEntry("fbi", DateTime.UtcNow) };
+            pd.Scores = new ScoreEntry[] { new ScoreEntry("rob", TimeExt.UnixEpoch + new TimeSpan(100, 0, 0), new TimeSpan(0, 2, 22)), new ScoreEntry("fbi", DateTime.UtcNow, new TimeSpan(0, 1, 34)) };
             managment.Save(pd);
             if (managment.ExposeMemoryStream)
             {
@@ -51,7 +51,7 @@ public class ScoreSystemExample : MonoBehaviour
             //managment.InvalidateCache();
             PlayerData restoredData = managment.Load();
             Data = restoredData;
-            Logger.LogVerbose(Data.Scores[0].Time.ToString());
+            Logger.LogVerbose(Data.Scores[0].AchievedOn.ToString());
         }
     }
 }
