@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Exp.MainMenu.unity
+    guid: 2d791e1eebac47f4e8ba8c5173fe7cc7
+  - enabled: 1
+    path: Assets/Scenes/ScoreBoard.unity
+    guid: 0d88d476097408c4c8c532e3b750d165
+  - enabled: 1
+    path: Assets/Scenes/Rens.unity
+    guid: b5866d83da078a841a93061fa91a717a
+  - enabled: 0
+    path: Assets/Scenes/RonaldScene.unity
+    guid: eba91f66fddbc83429f4d30f18c8c85b
   m_configObjects: {}
