@@ -6,7 +6,6 @@ using Object = UnityEngine.Object;
 
 namespace UnityUtils
 {
-#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(DrawIfAttribute))]
     public class DrawIfDrawer : PropertyDrawer
     {
@@ -145,5 +144,4 @@ namespace UnityUtils
             }
         }
     }
-    #endif
 }
