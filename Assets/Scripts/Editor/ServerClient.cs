@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 
 using UnityEngine;
 using UnityEditor;
@@ -11,8 +12,15 @@ public class ServerClient : MonoBehaviour
     {
         HttpClient client = new HttpClient();
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://127.0.0.1:5750/");
-        HttpResponseMessage message = await client.SendAsync(request);
-        Logger.Log(message.StatusCode.ToString());
-        Logger.Log(await message.Content.ReadAsStringAsync());
+        try
+        {
+            HttpResponseMessage message = await client.SendAsync(request);
+            Logger.Log(message.StatusCode.ToString());
+            Logger.Log(await message.Content.ReadAsStringAsync());
+        }
+        catch (SocketException)
+        {
+            Logger.LogWarning("The server isn't running on your computer");
+        }
     }
 }
