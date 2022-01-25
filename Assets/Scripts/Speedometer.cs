@@ -34,13 +34,13 @@ public class Speedometer : MonoBehaviour
         }
         else
         {
-            float deceleration = 100f;
+            float deceleration = 150f;
             Speed -= deceleration * Time.deltaTime;
         }
 
         if (Input.GetKey(KeyCode.S))
         {
-            float brakeSpeed = 100f;
+            float brakeSpeed = 150f;
             Speed -= brakeSpeed * Time.deltaTime;
         }
 
