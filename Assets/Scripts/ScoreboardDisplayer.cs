@@ -14,12 +14,17 @@ public class ScoreboardDisplayer : MonoBehaviour
 
     private void Awake()
     {
-        PlayerData tmpTestData = new PlayerData();
-        tmpTestData.Scores = new ScoreEntry[] {
-            new ScoreEntry("Bob", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 7)),
-            new ScoreEntry("Jimmy", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 20))
-        };
-        SaveGameManagment.GetGlobalInstance(true).Save(tmpTestData);
+        //PlayerData tmpTestData = new PlayerData();
+        //tmpTestData.Scores = new ScoreEntry[] {
+        //    new ScoreEntry("Bob", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 7)),
+        //    new ScoreEntry("Jelle", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 7)),
+        //    new ScoreEntry("Alexander", System.DateTime.UtcNow, new System.TimeSpan(0, 0, 57)),
+        //    new ScoreEntry("Boaz", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 9)),
+        //    new ScoreEntry("Bob", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 59)),
+        //    new ScoreEntry("Ronald", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 7)),
+        //    new ScoreEntry("Jimmy", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 40))
+        //};
+        //SaveGameManagment.GetGlobalInstance(true).Save(tmpTestData);
         PlayerData data = SaveGameManagment.GetGlobalInstance().Load();
         if (data != null)
         {

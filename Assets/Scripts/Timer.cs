@@ -41,4 +41,10 @@ public class Timer : MonoBehaviour
             TimerText.text = time;
         }
     }
+
+    public long EndRace()
+    {
+        watch.Stop();
+        return watch.ElapsedMilliseconds;
+    }
 }
