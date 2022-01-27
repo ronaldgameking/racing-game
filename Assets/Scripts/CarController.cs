@@ -14,6 +14,7 @@ public class CarController : MonoBehaviour
 
     [DrawIf(nameof(controls), ControlType.Physics, ComparisonType.Equals, DisablingType.DontDraw)]
     public Rigidbody rb;
+    public AnimationCurve SpeedCurve;
 
     public float MoveSpeed = 50;
     public float MaxSpeed = 15;
@@ -22,6 +23,7 @@ public class CarController : MonoBehaviour
     public float Traction = 1;
 
     private Vector3 MoveForce;
+    private float timeHeldControl = 0f;
 
     // Update is called once per frame
     void Update()
@@ -30,6 +32,7 @@ public class CarController : MonoBehaviour
         {
             // Moving
             MoveForce += transform.forward * MoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+            
             rb.velocity = MoveForce;
 
             // Steering
@@ -38,7 +41,17 @@ public class CarController : MonoBehaviour
 
             // Drag
             MoveForce *= Drag;
-            MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
+            if (Input.GetAxis("Vertical") != 0)
+            {
+                timeHeldControl += Time.deltaTime;
+            }
+            else
+            {
+                timeHeldControl -= Time.deltaTime;
+                //MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
+            }
+            timeHeldControl = Mathf.Clamp(timeHeldControl, -1f, 1f);
+            MoveForce = Vector3.ClampMagnitude(MoveForce, SpeedCurve.Evaluate(timeHeldControl) * MaxSpeed);
 
             // Traction
             Debug.DrawRay(transform.position, MoveForce.normalized * 3);

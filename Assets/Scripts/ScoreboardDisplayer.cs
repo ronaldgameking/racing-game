@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,41 +9,64 @@ public class ScoreboardDisplayer : MonoBehaviour
     //Amount of high scores to show
     public int RankingShowAmount = 20;
     public Transform WhereToAttach;
+    public Transform LatestContainer;
+
+    public bool UseDebugData = false;
+    public bool AppendTest = false;
+    public PlayerData Data = null;
 
     [SerializeField] 
     private GameObject ScoreEntryPrefab;
 
     private void Awake()
     {
-        //PlayerData tmpTestData = new PlayerData();
-        //tmpTestData.Scores = new ScoreEntry[] {
-        //    new ScoreEntry("Bob", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 7)),
-        //    new ScoreEntry("Jelle", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 7)),
-        //    new ScoreEntry("Alexander", System.DateTime.UtcNow, new System.TimeSpan(0, 0, 57)),
-        //    new ScoreEntry("Boaz", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 9)),
-        //    new ScoreEntry("Bob", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 59)),
-        //    new ScoreEntry("Ronald", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 7)),
-        //    new ScoreEntry("Jimmy", System.DateTime.UtcNow, new System.TimeSpan(0, 1, 40))
-        //};
-        //SaveGameManagment.GetGlobalInstance(true).Save(tmpTestData);
-        PlayerData data = SaveGameManagment.GetGlobalInstance().Load();
-        if (data != null)
+        Logger.Level = Logger.DebugLevel.Verbose;
+        SaveGameManagment managment = SaveGameManagment.GetGlobalInstance(true);
+        if (UseDebugData)
         {
-            ScoreEntry[] best = data.Scores.OrderBy((entry) =>
+            PlayerData tmpTestData = new PlayerData();
+            tmpTestData.Scores = new List<ScoreEntry>();
+            tmpTestData.Scores.Add(new ScoreEntry("Bob", new DateTime(2020,1,19), new TimeSpan(0, 1, 7)));
+            tmpTestData.Scores.Add(new ScoreEntry("Jelle", new DateTime(2020,1,18), new TimeSpan(0, 1, 7)));
+            tmpTestData.Scores.Add(new ScoreEntry("Alexander", new DateTime(2020, 1, 17), new TimeSpan(0, 0, 57)));
+            tmpTestData.Scores.Add(new ScoreEntry("Boaz", new DateTime(2020,1,15), new TimeSpan(0, 1, 9)));
+            tmpTestData.Scores.Add(new ScoreEntry("Bob", new DateTime(2020,1,14), new TimeSpan(0, 1, 59)));
+            tmpTestData.Scores.Add(new ScoreEntry("Ronald", DateTime.UtcNow, new TimeSpan(0, 1, 7)));
+            tmpTestData.Scores.Add(new ScoreEntry("Jimmy", new DateTime(2020, 1, 16), new TimeSpan(0, 1, 40)));
+            
+            managment.Save(tmpTestData);
+            if (AppendTest)
             {
-                return entry.AchievedTime.TotalMilliseconds;
-            }).ToArray();
-            for (int i = 0; i < data.Scores.Length; i++)
+                tmpTestData.Scores.Add(new ScoreEntry("PLgamer2006", new DateTime(2021, 6, 24), new TimeSpan(0, 1, 8)));
+                managment.Save(tmpTestData);
+            }
+        }
+
+        Data = managment.LoadSorted();
+        if (Data != null)
+        {
+            //ScoreEntry[] best = Data.Scores.OrderBy((entry) =>
+            //{
+            //    return entry.AchievedTime.TotalMilliseconds;
+            //}).ToArray();
+            ScoreEntry newest = Data.Scores.OrderByDescending((entry) =>
+            {
+                return entry.AchievedOn.Ticks;
+            }).FirstOrDefault();
+
+            for (int i = 0; i < Data.Scores.Count; i++)
             {
                 GameObject go = Instantiate(ScoreEntryPrefab, WhereToAttach);
                 ScoreEntryInterfaceData interfaceData = go.GetComponent<ScoreEntryInterfaceData>();
-                //interfaceData.ScoreNameText.text = $"#{i + 1} {data.Scores[i].Name}";
-                //interfaceData.ScoreDateText.text = data.Scores[i].AchievedOn.ToString();
-                //interfaceData.ScoreTimeText.text = data.Scores[i].AchievedTime.ToString();
-                interfaceData.ScoreNameText.text = $"#{i + 1} {best[i].Name}";
-                interfaceData.ScoreDateText.text = best[i].AchievedOn.ToString();
-                interfaceData.ScoreTimeText.text = best[i].AchievedTime.ToString();
+                interfaceData.ScoreNameText.text = $"#{i + 1} {Data.Scores[i].Name}";
+                interfaceData.ScoreDateText.text = Data.Scores[i].AchievedOn.ToString();
+                interfaceData.ScoreTimeText.text = Data.Scores[i].AchievedTime.ToString();
             }
+            GameObject latestGo = Instantiate(ScoreEntryPrefab, LatestContainer);
+            ScoreEntryInterfaceData latestInterfaceData = latestGo.GetComponent<ScoreEntryInterfaceData>();
+            latestInterfaceData.ScoreNameText.text = $"#{newest.Position + 1} {newest.Name}";
+            latestInterfaceData.ScoreDateText.text = newest.AchievedOn.ToString();
+            latestInterfaceData.ScoreTimeText.text = newest.AchievedTime.ToString();
         }
     }
 }

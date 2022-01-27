@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ScoreSystemExample : MonoBehaviour
@@ -34,7 +35,7 @@ public class ScoreSystemExample : MonoBehaviour
         {
             SaveGameManagment managment = SaveGameManagment.GetGlobalInstance(true);
             PlayerData pd = new PlayerData();
-            pd.Scores = new ScoreEntry[] { new ScoreEntry("rob", TimeExt.UnixEpoch + new TimeSpan(100, 0, 0), new TimeSpan(0, 2, 22)), new ScoreEntry("fbi", DateTime.UtcNow, new TimeSpan(0, 1, 34)) };
+            pd.Scores = new List<ScoreEntry>( new ScoreEntry[] { new ScoreEntry("rob", TimeExt.UnixEpoch + new TimeSpan(100, 0, 0), new TimeSpan(0, 2, 22)), new ScoreEntry("fbi", DateTime.UtcNow, new TimeSpan(0, 1, 34)) });
             managment.Save(pd);
             if (managment.ExposeMemoryStream)
             {

@@ -18,6 +18,8 @@ public class QuickSetup : EditorWindow
     {
         GUILayout.Label("Note: if you already have setup the scene with this then this will destroy any leftovers");
         
+
+
         if (GUILayout.Button("Setup"))
         {
             {
@@ -33,7 +35,7 @@ public class QuickSetup : EditorWindow
                 
             }
 
-            GameObject carObject =  Instantiate(CarPrefab);
+            GameObject carObject = Instantiate(CarPrefab);
             carObject.name = CarPrefab.name;
         }
     }
