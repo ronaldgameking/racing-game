@@ -168,10 +168,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1917833659032931938, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f9eff4fe547a2b644b35b05b7d76701d, type: 2}
     - target: {fileID: 2604758776433965755, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
       propertyPath: m_Name
       value: CarPlaceHolder
@@ -182,7 +178,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3107862637942280423, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3107862637942280423, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
       propertyPath: m_LocalPosition.x
@@ -267,11 +263,6 @@ MeshCollider:
 --- !u!1 &192336646 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2604758776433965755, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
-  m_PrefabInstance: {fileID: 93779995}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &192336647 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3107862637942280423, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
   m_PrefabInstance: {fileID: 93779995}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &192336648
@@ -1798,7 +1789,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1562551501 stripped
 GameObject:
@@ -2122,7 +2113,7 @@ RectTransform:
   - {fileID: 2062383914}
   - {fileID: 2106773999}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

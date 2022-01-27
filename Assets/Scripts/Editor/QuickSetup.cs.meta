@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 2afa03f8f84ffc04492db410a4e57758
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - CarPrefab: {fileID: 4999382480115231925, guid: 27e132ff5cdb5c741ac4aef6037f6831, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
