@@ -20,7 +20,7 @@ public class ScoreboardDisplayer : MonoBehaviour
 
     private void Awake()
     {
-        Logger.Level = Logger.DebugLevel.Verbose;
+        //Logger.Level = Logger.DebugLevel.Verbose;
         SaveGameManagment managment = SaveGameManagment.GetGlobalInstance(true);
         if (UseDebugData)
         {
