@@ -6,6 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/MainMenu.unity
+    guid: 3a4744f3c3233b741a805df6fbf52b7c
+  - enabled: 1
+    path: Assets/Scenes/ScoreBoard.unity
+    guid: 62fbfdd82e59e9d4fab60b21f9583d67
+  - enabled: 1
+    path: Assets/Scenes/SetupTest.unity
+    guid: 8d37cc1478051014190b1d064c4e475f
+  - enabled: 0
+    path: Assets/Scenes/RonaldScene.unity
+    guid: eba91f66fddbc83429f4d30f18c8c85b
+  - enabled: 0
+    path: Assets/Scenes/Unsafe.unity
+    guid: 5211c3881d056424db526a7f45b3c1ef
+  - enabled: 0
     path: Assets/Scenes/Rens.unity
     guid: b5866d83da078a841a93061fa91a717a
   m_configObjects: {}

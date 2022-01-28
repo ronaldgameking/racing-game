@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Reflection;
 using System.Linq;
+using System.Collections.Generic;
 
 public class SaveGameManagment
 {
@@ -108,27 +109,22 @@ public class SaveGameManagment
     /// <summary>
     /// Save the PlayerData in a temporaly memory stream
     /// </summary>
-    /// <param name="pd"></param>
+    /// <param name="pd" </param>
     public void Save(PlayerData pd)
     {
         using BinaryWriter binaryWriter = new BinaryWriter(m_memoryStream, Encoding.UTF8, true);
-        //pd.Scores.All(entry => {
-        //    binaryWriter.Write(entry.Initials.Length);
-        //    binaryWriter.Write(entry.Initials);
-        //    binaryWriter.Write(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-        //    return true; });
-        binaryWriter.Write(pd.Scores.Length);
-        Logger.LogVerbose("Written amount of scores");
-        for (int i = 0; i < pd.Scores.Length; i++)
+
+        binaryWriter.Write(pd.SaveVersion);
+        binaryWriter.Write(pd.Scores.Count);
+        ScoreEntry[] scoreEntries = pd.Scores.ToArray();
+        Logger.LogVerbose("Written amount of scores " + pd.Scores.Count);
+        for (int i = 0; i < pd.Scores.Count; i++)
         {
-            Logger.Log("Looping " + i);
-            binaryWriter.Write(pd.Scores[i].Name);
-            Logger.LogVerbose("Written Initials");
-            //binaryWriter.Write('\0');
-            binaryWriter.Write((pd.Scores[i].Time - TimeExt.UnixEpoch).TotalSeconds);
-            //Flush();
-            //Logger.LogVerbose("Written data of achieving");
-            //binaryWriter.Write('\0');
+            binaryWriter.Write(scoreEntries[i].Name);
+            binaryWriter.Write((scoreEntries[i].AchievedOn - TimeExt.UnixEpoch).TotalSeconds);
+            binaryWriter.Write(scoreEntries[i].AchievedTime.TotalSeconds);
+            binaryWriter.Write(i == pd.Scores.Count - 1);
+            binaryWriter.Write('\n');
         }
         m_memoryStream.Position = 0;
         if (AutoSave)
@@ -155,11 +151,13 @@ public class SaveGameManagment
     /// <returns></returns>
     public PlayerData Load()
     {
+        //Check if there is something cached
         if (!HasCache)
         {
             if (!File.Exists(path))
                 return null;
 
+            //Load file into memory
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 m_memoryStream.Position = 0;
@@ -167,29 +165,105 @@ public class SaveGameManagment
             }
             m_memoryStream.Position = 0;
         }
+
         BinaryReader binaryReader = new BinaryReader(m_memoryStream, Encoding.UTF8, true);
+        
+        //Player Data instance to put loaded data into
         PlayerData pd = new PlayerData();
+        pd.SaveVersion = binaryReader.ReadInt32();
+
+        //Improve readability
         int savedScores = binaryReader.ReadInt32();
-        pd.Scores = new ScoreEntry[savedScores];
-        for (int i = 0; i < pd.Scores.Length; i++)
+        //...for this
+        pd.Scores = new List<ScoreEntry>(savedScores);
+        //Read all saved scores
+        for (int i = 0; i < pd.Scores.Count; i++)
         {
-            Logger.LogVerbose("Loading ScoreEntry [" + i + "...");
+            Logger.LogVerbose("Loading ScoreEntry [" + i + "]...");
             ScoreEntry tempScore = new ScoreEntry();
-            //int nameLenght = binaryReader.ReadByte();
+
             string outName = binaryReader.ReadString();
-            //binaryReader.ReadChars(nameLenght).All(readChar =>
-            //{
-            //    outName += readChar;
-            //    return true;
-            //}
-            //);
             tempScore.Name = outName;
-            TimeSpan timeSpan = TimeSpan.FromSeconds(binaryReader.ReadDouble());
-            DateTime aquireDate = TimeExt.UnixEpoch + timeSpan;
-            tempScore.Time = aquireDate;
-            Logger.LogVerbose("Entry { id: " + i + ", Initials: " + tempScore.Name + ", Time:" + tempScore.Time.ToString() + "}");
+            TimeSpan epockAchievedOffset = TimeSpan.FromSeconds(binaryReader.ReadDouble());
+            DateTime aquireDate = TimeExt.UnixEpoch + epockAchievedOffset;
+            tempScore.AchievedOn = aquireDate;
+            TimeSpan achievedTime = TimeSpan.FromSeconds(binaryReader.ReadDouble());
+            tempScore.AchievedTime = achievedTime;
+            tempScore.Latest = binaryReader.ReadBoolean();
+            binaryReader.ReadChar();
+            Logger.LogVerbose($"Entry {{ id: {i}, Initials: {tempScore.Name}, Date achieved on: {tempScore.AchievedOn} ,Achieved time: {tempScore.AchievedTime}, Latest?: {tempScore.Latest}}}");
             pd.Scores[i] = tempScore;
         }
+        return pd;
+    }
+    /// <summary>
+    /// Loads player data from cache else it reds from file;
+    /// </summary>
+    /// <returns></returns>
+    public PlayerData LoadSorted()
+    {
+        //Check if there is something cached
+        if (!HasCache)
+        {
+            if (!File.Exists(path))
+                return null;
+
+            //Load file into memory
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                m_memoryStream.Position = 0;
+                fs.CopyTo(m_memoryStream);
+            }
+            m_memoryStream.Position = 0;
+        }
+
+        BinaryReader binaryReader = new BinaryReader(m_memoryStream, Encoding.UTF8, true);
+        
+        //Player Data instance to put loaded data into
+        PlayerData pd = new PlayerData();
+        pd.SaveVersion = binaryReader.ReadInt32();
+        //Improve readability
+        int savedScores = binaryReader.ReadInt32();
+        //...for this
+        pd.Scores = new List<ScoreEntry>(savedScores);
+        //ScoreEntry[] scoreEntries = new ScoreEntry[savedScores];
+        //scoreEntries = pd.Scores.ToArray();
+        //Read all saved scores
+        for (int i = 0; i < savedScores; i++)
+        {
+            Logger.LogVerbose("Loading ScoreEntry [" + i + "]...");
+            ScoreEntry tempScore = new ScoreEntry();
+
+            //Load value 
+            string outName = binaryReader.ReadString();
+            tempScore.Name = outName;
+            TimeSpan epockAchievedOffset = TimeSpan.FromSeconds(binaryReader.ReadDouble());
+            DateTime aquireDate = TimeExt.UnixEpoch + epockAchievedOffset;
+            tempScore.AchievedOn = aquireDate;
+            TimeSpan achievedTime = TimeSpan.FromSeconds(binaryReader.ReadDouble());
+            tempScore.AchievedTime = achievedTime;
+            tempScore.Latest = binaryReader.ReadBoolean();
+            binaryReader.ReadChar();
+            Logger.LogVerbose($"Entry {{ id: {i}, Initials: {tempScore.Name}, Date achieved on: {tempScore.AchievedOn} ,Achieved time: {tempScore.AchievedTime}, Latest?: {tempScore.Latest}}}");
+            pd.Scores.Add(tempScore);
+        }
+
+        //pd.Scores = pd.Scores.OrderByDescending((entry) =>
+        //{
+        //    return entry.AchievedOn.Ticks;
+        //}).ToArray();
+        //fast LINQ query to sort by fastest time
+        pd.Scores = pd.Scores.OrderBy((entry) =>
+        {
+            return entry.AchievedTime.TotalMilliseconds;
+        }).ToList();
+        for (int i = 0; i < pd.Scores.Count; i++)
+        {
+            ScoreEntry tmpH = pd.Scores[i];
+            tmpH.Position = i;
+            pd.Scores[i] = tmpH;
+        }
+
         return pd;
     }
     /// <summary>
