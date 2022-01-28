@@ -489,8 +489,8 @@ InputManager:
     m_Name: Horizontal Camera
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: i
-    positiveButton: k
+    negativeButton: left
+    positiveButton: right
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -504,9 +504,9 @@ InputManager:
   - serializedVersion: 3
     m_Name: Vertical Camera
     descriptiveName: 
-    descriptiveNegativeName: 
-    negativeButton: o
-    positiveButton: l
+    descriptiveNegativeName:    
+    negativeButton: left
+    positiveButton: right
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000

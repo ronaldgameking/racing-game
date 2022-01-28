@@ -25,61 +25,72 @@ public class CarController : MonoBehaviour
     private Vector3 MoveForce;
     private float timeHeldControl = 0f;
 
+    private GameManager gameManager;
+    private void Start()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
+
     // Update is called once per frame
+   
     void Update()
     {
-        if (controls == ControlType.Physics)
+        if(gameManager.countDownDone == true)
         {
-            // Moving
-            MoveForce += transform.forward * MoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
-            
-            rb.velocity = MoveForce;
-
-            // Steering
-            float steerInput = Input.GetAxis("Horizontal");
-            transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * SteerAngle * Time.deltaTime);
-
-            // Drag
-            MoveForce *= Drag;
-            if (Input.GetAxis("Vertical") != 0)
+            if (controls == ControlType.Physics)
             {
-                timeHeldControl += Time.deltaTime;
+                // Moving
+                MoveForce += transform.forward * MoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+
+                rb.velocity = MoveForce;
+
+                // Steering
+                float steerInput = Input.GetAxis("Horizontal");
+                transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * SteerAngle * Time.deltaTime);
+
+                // Drag
+                MoveForce *= Drag;
+                if (Input.GetAxis("Vertical") != 0)
+                {
+                    timeHeldControl += Time.deltaTime;
+                }
+                else
+                {
+                    timeHeldControl -= Time.deltaTime;
+                    //MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
+                }
+                timeHeldControl = Mathf.Clamp(timeHeldControl, -1f, 1f);
+                MoveForce = Vector3.ClampMagnitude(MoveForce, SpeedCurve.Evaluate(timeHeldControl) * MaxSpeed);
+
+                // Traction
+                Debug.DrawRay(transform.position, MoveForce.normalized * 3);
+                Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
+                MoveForce = Vector3.Lerp(MoveForce.normalized, transform.forward, Traction * Time.deltaTime) * MoveForce.magnitude;
             }
             else
             {
-                timeHeldControl -= Time.deltaTime;
-                //MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
+                // Moving
+                MoveForce += transform.forward * MoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
+                if (controls == ControlType.Raw)
+                {
+                    transform.position += MoveForce * Time.deltaTime;
+                }
+
+                // Steering
+                float steerInput = Input.GetAxis("Horizontal");
+                transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * SteerAngle * Time.deltaTime);
+
+                // Drag
+                //MoveForce *= Drag;
+                MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
+
+                // Traction
+                Debug.DrawRay(transform.position, MoveForce.normalized * 3);
+                Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
+                MoveForce = Vector3.Lerp(MoveForce.normalized, transform.forward, Traction * Time.deltaTime) * MoveForce.magnitude;
+
             }
-            timeHeldControl = Mathf.Clamp(timeHeldControl, -1f, 1f);
-            MoveForce = Vector3.ClampMagnitude(MoveForce, SpeedCurve.Evaluate(timeHeldControl) * MaxSpeed);
-
-            // Traction
-            Debug.DrawRay(transform.position, MoveForce.normalized * 3);
-            Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
-            MoveForce = Vector3.Lerp(MoveForce.normalized, transform.forward, Traction * Time.deltaTime) * MoveForce.magnitude;
         }
-        else
-        {
-            // Moving
-            MoveForce += transform.forward * MoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
-            if (controls == ControlType.Raw)
-            {
-                transform.position += MoveForce * Time.deltaTime;
-            }
-
-            // Steering
-            float steerInput = Input.GetAxis("Horizontal");
-            transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * SteerAngle * Time.deltaTime);
-
-            // Drag
-            //MoveForce *= Drag;
-            MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
-
-            // Traction
-            Debug.DrawRay(transform.position, MoveForce.normalized * 3);
-            Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
-            MoveForce = Vector3.Lerp(MoveForce.normalized, transform.forward, Traction * Time.deltaTime) * MoveForce.magnitude;
-
-        }
+        
     }
 }
