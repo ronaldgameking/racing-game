@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 6721077525311163309}
   - component: {fileID: 9199758781778913539}
   - component: {fileID: 382621821329376401}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StraightRoad1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &849903555165972572
 Transform:
