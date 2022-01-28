@@ -42,7 +42,7 @@ namespace UnityUtils
             if (field != null)
             {
                 value = field.GetValue(target);
-                Debug.Log($"Type: {value.GetType()}, Value: {value}");
+                Logger.Log($"Type: {value.GetType()}, Value: {value}");
             }
             else if (targetObjectClassType.GetProperty(drawIf.comparedPropertyName) != null)
             {
