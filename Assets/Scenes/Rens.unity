@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.13868973, g: 0.17362647, b: 0.23609364, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -178,7 +178,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3107862637942280423, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3107862637942280423, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
       propertyPath: m_LocalPosition.x
@@ -265,6 +265,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2604758776433965755, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
   m_PrefabInstance: {fileID: 93779995}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &192336647 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3107862637942280423, guid: 17fdb97686b19c0439b87ea06d8c9451, type: 3}
+  m_PrefabInstance: {fileID: 93779995}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &192336648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +282,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ddd5a25ef9af8d4ea0d6eb272b6d7f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controls: 0
+  rb: {fileID: 0}
+  SpeedCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   MoveSpeed: 50
   MaxSpeed: 10
   Drag: 0.99
@@ -840,7 +853,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 25, y: 0, z: 0}
 --- !u!114 &695298315
 MonoBehaviour:
@@ -1210,6 +1223,10 @@ PrefabInstance:
     - target: {fileID: 7728417284373724118, guid: 8cdaeaf9402528d4fbe2065a02575e3e, type: 3}
       propertyPath: m_Name
       value: BuildingsPlaceholds
+      objectReference: {fileID: 0}
+    - target: {fileID: 7728417284373724118, guid: 8cdaeaf9402528d4fbe2065a02575e3e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8cdaeaf9402528d4fbe2065a02575e3e, type: 3}
@@ -2113,7 +2130,7 @@ RectTransform:
   - {fileID: 2062383914}
   - {fileID: 2106773999}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2133,6 +2150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimerText: {fileID: 2062383912}
+  UseHighPrecision: 0
 --- !u!1 &1805335101 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2050342096337270755, guid: d64db3c789c57cf41b83e0f3fb375d68, type: 3}
