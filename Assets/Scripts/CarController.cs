@@ -26,10 +26,16 @@ public class CarController : MonoBehaviour
     private Vector3 MoveForce;
     private float timeHeldControl = 0f;
 
+    private GameManager gameManager;
+    private void Start()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (controls == ControlType.Physics)
+        if(gameManager.countDownDone == true)
         {
             // Moving
             MoveForce += transform.forward * MoveSpeed * Input.GetAxis("Vertical") * Time.fixedDeltaTime;
@@ -68,19 +74,17 @@ public class CarController : MonoBehaviour
                 transform.position += MoveForce * Time.fixedDeltaTime;
             }
 
-            // Steering
-            float steerInput = Input.GetAxis("Horizontal");
-            transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * SteerAngle * Time.deltaTime);
+                // Drag
+                //MoveForce *= Drag;
+                MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
 
-            // Drag
-            //MoveForce *= Drag;
-            MoveForce = Vector3.ClampMagnitude(MoveForce, MaxSpeed);
+                // Traction
+                Debug.DrawRay(transform.position, MoveForce.normalized * 3);
+                Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
+                MoveForce = Vector3.Lerp(MoveForce.normalized, transform.forward, Traction * Time.deltaTime) * MoveForce.magnitude;
 
-            // Traction
-            Debug.DrawRay(transform.position, MoveForce.normalized * 3);
-            Debug.DrawRay(transform.position, transform.forward * 3, Color.blue);
-            MoveForce = Vector3.Lerp(MoveForce.normalized, transform.forward, Traction * Time.deltaTime) * MoveForce.magnitude;
-
+            }
         }
+        
     }
 }
