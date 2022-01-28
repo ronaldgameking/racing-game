@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 7350458598343122010}
   - component: {fileID: 6721077525311163309}
   - component: {fileID: 9199758781778913539}
-  m_Layer: 0
+  - component: {fileID: 382621821329376401}
+  m_Layer: 6
   m_Name: StraightRoad1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &849903555165972572
 Transform:
@@ -91,7 +92,21 @@ BoxCollider:
   m_GameObject: {fileID: 6180428679432589339}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 5.25, y: 0.08689253, z: 8.000002}
+  m_Size: {x: 5.25, y: 0.085, z: 8.000002}
   m_Center: {x: 0, y: -0.05655373, z: 0}
+--- !u!64 &382621821329376401
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6180428679432589339}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -9219997894873347316, guid: 36b17212de5d06c44a6b859556a50f9b, type: 3}

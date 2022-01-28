@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 7383458040185197494}
   - component: {fileID: 137103378686573097}
   - component: {fileID: -7404300076398871516}
-  m_Layer: 0
+  - component: {fileID: 3751973787737816462}
+  m_Layer: 6
   m_Name: Crossroad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &3410812729785864503
 Transform:
@@ -91,7 +92,21 @@ BoxCollider:
   m_GameObject: {fileID: 6100421922574185489}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 8.125, y: 0.08869482, z: 8.250001}
-  m_Center: {x: 0, y: -0.05787621, z: 0}
+  m_Size: {x: 8.125, y: 0.085, z: 8.250001}
+  m_Center: {x: 0, y: -0.062188033, z: 0}
+--- !u!64 &3751973787737816462
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6100421922574185489}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3023587565482496673, guid: 36b17212de5d06c44a6b859556a50f9b, type: 3}
